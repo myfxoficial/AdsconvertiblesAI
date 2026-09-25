@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Ads IA | Rendimiento y Escala</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .section {
+            margin: 60px 0;
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: var(--text-main);
+            border-left: 4px solid var(--accent-blue);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+
+        .text-block {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Images */
+        .image-wrapper {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-caption {
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: #0b1121;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            background: var(--bg-card);
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .features-list li::before {
+            content: '⚡';
+            font-size: 1.2rem;
+        }
+
+        /* Pricing Cards */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card.premium {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+            position: relative;
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--accent-blue);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .plan-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 15px 0;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            flex-grow: 1;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #334155;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-deliverables {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent-green);
+            margin-top: 20px;
+        }
+
+        /* Trojan Horse Offer */
+        .special-offer {
+            background: linear-gradient(145deg, #064e3b, #022c22);
+            border: 2px dashed var(--accent-green);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .special-offer h3 {
+            color: #34d399;
+            font-size: 1.8rem;
+            margin-top: 0;
+        }
+
+        .price-strike {
+            text-decoration: line-through;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .price-new {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent-green);
+            color: #022c22;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-decoration: none;
+            margin-top: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Hero -->
+        <header class="hero">
+            <h1>Deja de perder miles de euros en rodajes que el algoritmo consume en 3 días.</h1>
+            <p>El marketing ha cambiado. Hoy, el éxito de tus campañas depende de testear ganchos (hooks) constantemente. Nosotros hemos hackeado el sistema.</p>
+        </header>
+
+        <!-- Section 1: The Problem & Solution -->
+        <section class="section">
+            <p class="text-block">Contratar a una agencia tradicional para rodar 8 variaciones de anuncios te costaría semanas y más de 3.000€. Para cuando publicas, la fatiga creativa ya ha matado tu ROAS.</p>
+            <p class="text-block">Combinamos <span class="highlight">estructuras de guion orientadas a la conversión</span> con <span class="highlight">arquitectura de IA Hiperrealista</span> y colorimetría cinematográfica para crear los anuncios que tu marca necesita, a una fracción del tiempo.</p>
+
+            <div class="image-wrapper">
+                <img src="IMG/imagen 1.jpg" alt="Ejemplo de IA Hiperrealista con profundidad de campo">
+                <div class="image-caption">El fin del "Valle Inquietante". Controlamos la luz, la profundidad de campo y el movimiento para un realismo comercial impecable.</div>
+            </div>
+
+            <ul class="features-list">
+                <li><strong>Guiones Psicológicos:</strong> Estructurados para enganchar en el segundo 1 (El "Hook") y retener hasta la conversión (CTA).</li>
+                <li><strong>Dirección de Arte Cinematográfica:</strong> Etalonaje y colorimetría posproducida para un "look" premium de agencia.</li>
+                <li><strong>Velocidad y Formato:</strong> 1080p, formato Vertical (9:16), 15 o 30 segundos. Pasamos de la idea a la campaña en días.</li>
+            </ul>
+        </section>
+
+        <!-- Section 2: Technology & Methodology -->
+        <section class="section">
+            <h2>El Motor detrás de la Magia</h2>
+            <p class="text-block">No utilizamos herramientas "click-and-play" limitadas. Operamos mediante <strong>sistemas avanzados basados en nodos</strong>. Esto nos da un control milimétrico sobre cada fotograma, permitiéndonos cambiar la iluminación, el entorno o el ángulo sin tener que volver a "grabar".</p>
+            
+            <div class="image-wrapper">
+                <img src="img/imagen 2.jpg" alt="Workflow técnico de arquitectura visual">
+                <div class="image-caption">Nuestra arquitectura de nodos de IA nos permite garantizar consistencia narrativa y una calidad visual suprema.</div>
+            </div>
+
+            <p class="text-block"><strong>La Clave: La Modularidad del "Gancho".</strong> El 80% del éxito de un anuncio está en los primeros 3 segundos. Generamos el "cuerpo" del video una sola vez y usamos nuestra infraestructura para crear <em>múltiples inicios (Hooks)</em>. Recibes variaciones listas para hacer Test A/B en tus campañas sin quemar presupuesto extra.</p>
+        </section>
+
+        <!-- Section 3: Pricing -->
+        <section class="section">
+            <h2>Nuestra Inversión de Agencia</h2>
+            
+            <div class="pricing-grid">
+                <!-- Plan Impulso -->
+                <div class="pricing-card">
+                    <h3 class="plan-title">Plan Impulso</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 5px 0 0;">Ideal para validar estrategias</p>
+                    <div class="plan-price">1.950 € <span>/ mes</span></div>
+                    
+                    <ul class="plan-features">
+                        <li><strong>4 Videos Base</strong> (1 por semana)</li>
+                        <li><strong>1 Variación de Hook</strong> extra por video</li>
+                        <li>Guiones de conversión incluidos</li>
+                        <li>Postproducción cinematográfica</li>
+                    </ul>
+
+                    <div class="plan-deliverables">
+                        Recibes 8 Archivos Finales<br>
+                        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: normal;">(~243€ por variación lista para Ads)</span>
+                    </div>
+                </div>
+
+                <!-- Plan Escala -->
+                <div class="pricing-card premium">
+                    <div class="premium-badge">Más Rentable</div>
+                    <h3 class="plan-title">Plan Escala</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 5px 0 0;">Para marcas facturando agresivamente</p>
+                    <div class="plan-price">4.200 € <span>/ mes</span></div>
+                    
+                    <ul class="plan-features">
+                        <li><strong>10 Videos Base</strong></li>
+                        <li><strong>2 Variaciones de Hook</strong> extra por video</li>
+                        <li>Prioridad en tiempos de entrega</li>
+                        <li>Saturación total de la competencia</li>
+                    </ul>
+
+                    <div class="plan-deliverables">
+                        Recibes 30 Archivos Finales<br>
+                        <span style="font-size: 0.85rem; color: #94a3b8; font-weight: normal;">(~140€ por variación lista para Ads)</span>
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: right; color: var(--text-muted); font-size: 0.85rem; margin-top: 15px;">*Video individual (fuera de retainer): Setup fee de 650 €</p>
+        </section>
+
+        <!-- Section 4: The Offer -->
+        <section class="special-offer">
+            <h3>Programa Exclusivo: Casos de Éxito (Beta)</h3>
+            <p class="text-block" style="color: #cbd5e1; max-width: 600px; margin: 0 auto 20px;">Sabemos que el papel lo aguanta todo. Actualmente abrimos plazas para 3 marcas con buen producto para documentar nuestro portafolio público.</p>
+            
+            <div style="margin: 30px 0;">
+                <span class="price-strike">650 €</span>
+                <span class="price-new">150 €</span>
+                <p style="color: #6ee7b7; font-weight: 600; margin-top: 10px;">Tu primer Video Anuncio (Guion + 2 Hooks)</p>
+            </div>
+
+            <p class="text-block" style="color: #94a3b8; font-size: 0.95rem; max-width: 650px; margin: 0 auto;">Esta cantidad cubre <em>únicamente</em> nuestros gastos de servidores de renderizado. El guion, la IA y la edición corren por nuestra cuenta. Cuando el video te genere ventas, nos permites usar tus métricas como caso de estudio y negociamos tu entrada al Plan Impulso.</p>
+            
+            <a href="mailto:tuemail@agencia.com" class="cta-button">Aplicar para el Caso de Estudio</a>
+            <p style="color: #94a3b8; font-size: 0.8rem; margin-top: 15px;">Riesgo cero para ti. Beneficio mutuo.</p>
+        </section>
+
+    </div>
+
+</body>
+</html>
