@@ -297,6 +297,22 @@
     .form-note { margin: 0; color: var(--gray-500); font-size: 0.8rem; }
     .form-note a { color: var(--black); }
 
+    /* ========================================================= NUEVO: TEST DE CUALIFICACIÓN ========================================================= */
+    .quiz { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(8,8,8,0.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    .quiz[hidden] { display: none; }
+    .quiz-panel { position: relative; width: min(100%, 560px); max-height: calc(100vh - 40px); overflow-y: auto; padding: 44px 40px 36px; background: var(--off-white); border-radius: var(--radius); }
+    .quiz-close { position: absolute; top: 12px; right: 14px; width: 38px; height: 38px; border: 0; background: transparent; color: var(--black); font-size: 1.7rem; line-height: 1; cursor: pointer; }
+    .quiz-progress { height: 2px; margin-bottom: 26px; background: var(--border); }
+    .quiz-progress span { display: block; height: 100%; width: 0; background: var(--black); transition: width 0.5s var(--ease-out-expo); }
+    .quiz-step { margin: 0 0 10px; color: var(--gray-500); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+    .quiz-title { margin: 0 0 26px; font-size: 1.5rem; line-height: 1.25; letter-spacing: -0.03em; }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-opt { display: flex; align-items: flex-start; gap: 16px; width: 100%; padding: 16px 18px; background: var(--white); border: 1px solid rgba(0,0,0,0.15); border-radius: var(--radius); color: var(--black); font-family: var(--font-main); font-size: 1rem; line-height: 1.5; text-align: left; cursor: pointer; transition: all 0.3s var(--ease-out-expo); }
+    .quiz-opt:hover, .quiz-opt:focus-visible { background: var(--black); color: var(--white); border-color: var(--black); transform: translateY(-2px); outline: none; }
+    .quiz-opt b { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.3; }
+    .quiz-end p { margin: 0 0 26px; color: var(--gray-500); }
+    .quiz-end .cta-button { width: 100%; }
+
     /* ========================================================= RESPONSIVE ========================================================= */
     @media (max-width: 800px) {
       .container { width: min(calc(100% - 32px), var(--max-width)); }
@@ -330,6 +346,7 @@
       .wa-float { display: none; }
       .contact-grid { grid-template-columns: 1fr; }
       .contact-card, .contact-form { padding: 35px 28px; }
+      .quiz-panel { padding: 40px 22px 28px; }
       .contact-form .cta-button { width: 100%; }
     }
   </style>
@@ -633,6 +650,24 @@
     <a href="https://wa.me/34667927935" data-wa="Hola MYFX, quiero aplicar a la beta. (desde: móvil)" target="_blank" rel="noopener" class="cta-button dark"><svg class="wa-icon" aria-hidden="true"><use href="#wa"/></svg> Aplicar a la beta · 150 €</a>
   </div>
 
+  <!-- NUEVO: TEST DE CUALIFICACIÓN (se abre al pulsar cualquier botón de WhatsApp) -->
+  <div class="quiz" id="quiz" role="dialog" aria-modal="true" aria-labelledby="quiz-q" hidden>
+    <div class="quiz-panel">
+      <button type="button" class="quiz-close" id="quiz-close" aria-label="Cerrar">×</button>
+      <div class="quiz-progress"><span id="quiz-bar"></span></div>
+      <div id="quiz-body">
+        <p class="quiz-step" id="quiz-step"></p>
+        <h3 class="quiz-title" id="quiz-q"></h3>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+      <div class="quiz-end" id="quiz-end" hidden>
+        <h3 class="quiz-title" id="quiz-end-title"></h3>
+        <p id="quiz-end-text"></p>
+        <div id="quiz-end-action"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- NUEVO: botón flotante de WhatsApp (escritorio) -->
   <a href="https://wa.me/34667927935" data-wa="Hola MYFX, quiero más información." target="_blank" rel="noopener" class="wa-float" aria-label="Escribir por WhatsApp"><svg class="wa-icon" aria-hidden="true"><use href="#wa"/></svg></a>
 
@@ -655,6 +690,131 @@
     const waLink = (text) => `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
     document.querySelectorAll('[data-wa]').forEach(a => { a.href = waLink(a.dataset.wa); });
 
+    /* NUEVO: test de cualificación (A/B/C). Todos los botones de WhatsApp lo abren antes de enviar al chat. */
+    // Opcional: pega aquí la URL de tu Google Apps Script para guardar cada respuesta en una hoja de Google Sheets. Vacío = solo llega por WhatsApp.
+    const SHEET_URL = "";
+
+    /* NUEVO: analítica (Umami Cloud, sin cookies). Pega aquí tu Website ID (Umami > Settings > Websites). Vacío = no se carga nada. */
+    const UMAMI_ID = "ec42adf6-4fb7-4074-b076-65d2af4ef254";
+    if (UMAMI_ID) {
+      const sc = document.createElement("script");
+      sc.defer = true; sc.src = "https://cloud.umami.is/script.js"; sc.dataset.websiteId = UMAMI_ID;
+      document.head.append(sc);
+    }
+    const track = (name) => { try { if (window.umami && window.umami.track) window.umami.track(name); } catch (err) {} };
+    const btnLabel = (t) => {
+      const m = t.match(/desde: ([^)]+)\)/);
+      if (m) return m[1].replace(/\s+/g, "-");
+      if (t.includes("Plan Impulso")) return "plan-impulso";
+      if (t.includes("Plan Escala")) return "plan-escala";
+      return "flotante";
+    };
+    const fuente = () => new URLSearchParams(location.search).get("utm_source") || (document.referrer ? new URL(document.referrer).hostname : "directo");
+
+    // Cada opción: [texto, puntos]. Las preguntas con 0 puntos son solo informativas. Edita preguntas y respuestas a tu gusto.
+    const QUIZ = [
+      { k: "Idioma", q: "¿En qué idioma prefieres que hablemos?", o: [["Español", 0], ["Inglés", 0], ["Otro", 0]] },
+      { k: "Producto", q: "¿Qué quieres anunciar?", o: [["Un producto físico (ecommerce, moda, lujo…)", 2], ["Un servicio o infoproducto", 1], ["Todavía no tengo producto", 0]] },
+      { k: "Anuncios", q: "¿Ya haces anuncios en Meta, TikTok o similares?", o: [["Sí, invierto cada mes", 2], ["Todavía no, pero voy a empezar", 1], ["Aún no lo he pensado", 0]] },
+      { k: "Plataforma", q: "¿Dónde quieres anunciarte principalmente?", o: [["Instagram y Facebook (Meta)", 0], ["TikTok", 0], ["Otra plataforma / aún no lo sé", 0]] },
+      { k: "Inversión mensual", q: "¿Cuánto inviertes (o piensas invertir) al mes en anuncios?", o: [["Menos de 500 €", 0], ["Entre 500 € y 3.000 €", 1], ["Más de 3.000 €", 2]] },
+      { k: "Material", q: "¿Qué material tienes de tu producto?", o: [["Fotos y vídeos propios de buena calidad", 2], ["Solo fotos básicas", 1], ["Todavía nada", 0]] },
+      { k: "Decisión", q: "¿Quién decide la contratación?", o: [["Yo decido", 2], ["Tengo que consultarlo con un socio o equipo", 1], ["Pregunto en nombre de otra persona", 0]] },
+      { k: "Inicio", q: "¿Cuándo te gustaría empezar?", o: [["Lo antes posible (este mes)", 2], ["En 1 a 3 meses", 1], ["Sin fecha, estoy mirando", 0]] },
+      { k: "Necesidad", q: "¿Qué necesitas ahora?", o: [["Probar un primer anuncio (programa beta)", 1], ["Producción mensual constante", 2], ["Solo me estoy informando", 0]] },
+      { k: "Freno", q: "¿Qué es lo que más te frena hoy en tus anuncios?", o: [["El coste de producir vídeos", 0], ["No sé qué creatividades funcionan", 0], ["Falta de tiempo o de equipo", 0]] }
+    ];
+    const MAX_SCORE = 14;
+
+    const quizEl = document.getElementById("quiz");
+    const qBody = document.getElementById("quiz-body");
+    const qEnd = document.getElementById("quiz-end");
+    const qBar = document.getElementById("quiz-bar");
+    const qStepEl = document.getElementById("quiz-step");
+    const qTitle = document.getElementById("quiz-q");
+    const qOpts = document.getElementById("quiz-options");
+    let quizStep = 0, quizAnswers = [], quizSource = "", quizOpener = null, quizDone = false;
+
+    function openQuiz(source, opener) {
+      quizSource = source; quizOpener = opener; quizStep = 0; quizAnswers = []; quizDone = false; track("quiz-inicio");
+      qBody.hidden = false; qEnd.hidden = true;
+      quizEl.hidden = false; document.body.style.overflow = "hidden";
+      renderQuiz();
+    }
+    function closeQuiz() {
+      if (!quizDone && !quizEl.hidden) track("quiz-abandono-p" + (quizStep + 1));
+      quizEl.hidden = true; document.body.style.overflow = "";
+      if (quizOpener) quizOpener.focus();
+    }
+    function renderQuiz() {
+      const q = QUIZ[quizStep];
+      track("quiz-p" + (quizStep + 1));
+      qStepEl.textContent = "Pregunta " + (quizStep + 1) + " de " + QUIZ.length;
+      qTitle.textContent = q.q;
+      qBar.style.width = (quizStep / QUIZ.length * 100) + "%";
+      qOpts.innerHTML = "";
+      q.o.forEach((o, i) => {
+        const b = document.createElement("button");
+        b.type = "button"; b.className = "quiz-opt";
+        const l = document.createElement("b"); l.textContent = "ABC"[i];
+        const t = document.createElement("span"); t.textContent = o[0];
+        b.append(l, t);
+        b.addEventListener("click", () => pickOption(i));
+        qOpts.append(b);
+      });
+      qOpts.firstChild.focus();
+    }
+    function showEnd(title, text, actionEl) {
+      qBody.hidden = true; qEnd.hidden = false; qBar.style.width = "100%";
+      document.getElementById("quiz-end-title").textContent = title;
+      document.getElementById("quiz-end-text").textContent = text;
+      const box = document.getElementById("quiz-end-action");
+      box.innerHTML = ""; box.append(actionEl);
+    }
+    function pickOption(i) {
+      quizAnswers.push(i);
+      if (quizStep === 0 && i > 0) { finishQuiz(true); return; }
+      if (quizStep < QUIZ.length - 1) { quizStep++; renderQuiz(); } else { finishQuiz(false); }
+    }
+    function finishQuiz(outOfLanguage) {
+      const rows = quizAnswers.map((a, idx) => ({ k: QUIZ[idx].k, text: QUIZ[idx].o[a][0], pts: QUIZ[idx].o[a][1] }));
+      const score = rows.reduce((n, r) => n + r.pts, 0);
+      let profile = outOfLanguage ? "FUERA (idioma)" : score >= 10 ? "✅ APTO" : score >= 6 ? "🟡 POSIBLE" : "🔴 POCO ENCAJE";
+
+      quizDone = true; track(outOfLanguage ? "quiz-fuera-idioma" : "quiz-completo");
+
+      if (SHEET_URL) {
+        const data = { origen: quizSource, fuente: fuente() };
+        rows.forEach(r => { data[r.k] = r.text; });
+        data.puntos = score; data.perfil = profile;
+        fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }).catch(() => {});
+      }
+
+      if (outOfLanguage) {
+        const btn = document.createElement("button");
+        btn.type = "button"; btn.className = "cta-button dark"; btn.textContent = "Cerrar";
+        btn.addEventListener("click", closeQuiz);
+        showEnd("Por ahora atendemos solo en español", "Si puedes escribirnos en español, vuelve a intentarlo cuando quieras.", btn);
+        return;
+      }
+
+      const msg = [quizSource, ""]
+        .concat(rows.map((r, idx) => (idx + 1) + ") " + r.k + ": " + r.text))
+        .concat(["", "Perfil: " + profile + " (" + score + "/" + MAX_SCORE + ")"]).join("\n");
+      const url = waLink(msg);
+      const a = document.createElement("a");
+      a.href = url; a.target = "_blank"; a.rel = "noopener"; a.className = "cta-button dark"; a.textContent = "Abrir WhatsApp";
+      showEnd("Listo, gracias", "Te abrimos WhatsApp con tus respuestas ya escritas. Solo tienes que enviar el mensaje.", a);
+      window.open(url, "_blank", "noopener");
+      track("whatsapp-abierto");
+    }
+    document.getElementById("quiz-close").addEventListener("click", closeQuiz);
+    quizEl.addEventListener("click", (e) => { if (e.target === quizEl) closeQuiz(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !quizEl.hidden) closeQuiz(); });
+    document.querySelectorAll('[data-wa]').forEach(a => {
+      a.addEventListener("click", (e) => { e.preventDefault(); track("clic-" + btnLabel(a.dataset.wa)); openQuiz(a.dataset.wa, a); });
+    });
+
     const form = document.getElementById("contact-form");
     if (form) {
       form.addEventListener("submit", (e) => {
@@ -670,9 +830,14 @@
         ].filter(Boolean).join("\n");
         const url = waLink(msg);
         window.open(url, "_blank", "noopener");
+        track("form-enviado");
         document.getElementById("form-status").innerHTML = 'Abriendo WhatsApp… Si no se abre, <a href="' + url + '" target="_blank" rel="noopener"><u>pulsa aquí</u></a>.';
       });
     }
+
+    /* NUEVO: qué secciones llegan a ver los visitantes */
+    const seen = new IntersectionObserver((entries, ob) => entries.forEach(x => { if (x.isIntersecting) { track("vista-" + x.target.id); ob.unobserve(x.target); } }), { threshold: 0.3 });
+    ["beta", "retainers", "contacto"].forEach(id => { const el = document.getElementById(id); if (el) seen.observe(el); });
   </script>
 </body>
 </html>
