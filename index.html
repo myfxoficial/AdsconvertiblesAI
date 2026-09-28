@@ -24,17 +24,14 @@
       --font-display: "Playfair Display", serif;
       --radius: 2px;
       --max-width: 1180px;
+      
+      /* Easing premium para animaciones */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* ========================================================= RESET ========================================================= */
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       padding: 0;
@@ -43,16 +40,45 @@
       font-family: var(--font-main);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+
+    /* ========================================================= MOTION UI CLASSES ========================================================= */
+    /* Animación de entrada inicial (Nav) */
+    @keyframes fadeDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .nav { animation: fadeDown 1.2s var(--ease-out-expo) forwards; }
+
+    /* Clases genéricas para IntersectionObserver */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+      will-change: opacity, transform;
+    }
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 1.2s var(--ease-out-expo), transform 1.2s var(--ease-out-expo);
+      will-change: opacity, transform;
+    }
+    
+    /* Estados activos (cuando entran en viewport) */
+    .reveal-up.is-visible, 
+    .reveal-scale.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-    }
+    /* Staggers (retrasos para efectos en cascada) */
+    .delay-100 { transition-delay: 0.1s; }
+    .delay-200 { transition-delay: 0.2s; }
+    .delay-300 { transition-delay: 0.3s; }
+    .delay-400 { transition-delay: 0.4s; }
 
     /* ========================================================= LAYOUT ========================================================= */
     .container {
@@ -68,7 +94,6 @@
       padding: 28px 0;
       border-bottom: 1px solid var(--border);
     }
-
     .brand {
       display: flex;
       align-items: center;
@@ -78,7 +103,6 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-
     .nav-label {
       color: var(--gray-500);
       font-size: 0.72rem;
@@ -91,7 +115,6 @@
       padding: 130px 0 120px;
       border-bottom: 1px solid var(--border);
     }
-
     .eyebrow {
       display: inline-flex;
       align-items: center;
@@ -102,14 +125,18 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-
     .eyebrow::before {
       content: "";
       width: 28px;
       height: 1px;
       background: var(--black);
+      transform-origin: left;
+      animation: scaleX 1s var(--ease-out-expo) forwards;
     }
-
+    @keyframes scaleX {
+      0% { transform: scaleX(0); }
+      100% { transform: scaleX(1); }
+    }
     .hero h1 {
       max-width: 1050px;
       margin: 0;
@@ -118,26 +145,22 @@
       letter-spacing: -0.065em;
       font-weight: 600;
     }
-
     .hero h1 em {
       font-family: var(--font-display);
       font-weight: 400;
     }
-
     .hero-bottom {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       margin-top: 65px;
     }
-
     .hero-description {
       max-width: 520px;
       color: var(--gray-700);
       font-size: 1.12rem;
       line-height: 1.75;
     }
-
     .hero-meta {
       display: flex;
       justify-content: flex-end;
@@ -155,14 +178,12 @@
       padding: 120px 0;
       border-bottom: 1px solid var(--border);
     }
-
     .section-header {
       display: grid;
       grid-template-columns: 160px 1fr;
       gap: 40px;
       margin-bottom: 65px;
     }
-
     .section-number {
       font-size: 0.72rem;
       font-weight: 700;
@@ -170,7 +191,6 @@
       text-transform: uppercase;
       color: var(--gray-500);
     }
-
     .section-title {
       max-width: 850px;
       margin: 0;
@@ -178,7 +198,6 @@
       line-height: 1;
       letter-spacing: -0.05em;
     }
-
     .section-title em {
       font-family: var(--font-display);
       font-weight: 400;
@@ -191,14 +210,12 @@
       gap: 80px;
       margin-bottom: 80px;
     }
-
     .text-block {
       margin: 0;
       color: var(--gray-700);
       font-size: 1.08rem;
       line-height: 1.8;
     }
-
     .text-block strong {
       color: var(--black);
       font-weight: 700;
@@ -211,18 +228,15 @@
       overflow: hidden;
       background: var(--black);
     }
-
     .image-wrapper img {
       width: 100%;
       aspect-ratio: 16 / 9;
       object-fit: cover;
-      transition: transform 0.8s ease; /* Se quitó la transición del filtro */
+      transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-
     .image-wrapper:hover img {
-      transform: scale(1.025);
+      transform: scale(1.05);
     }
-
     .image-caption {
       display: flex;
       justify-content: space-between;
@@ -242,29 +256,26 @@
       padding: 0;
       border-top: 1px solid var(--border);
     }
-
     .features-list li {
       display: grid;
       grid-template-columns: 60px 220px 1fr;
       gap: 30px;
       padding: 27px 0;
       border-bottom: 1px solid var(--border);
+      transition: background-color 0.4s ease, padding-left 0.4s ease;
     }
-
+    .features-list li:hover {
+      background-color: rgba(0,0,0,0.02);
+      padding-left: 15px;
+    }
     .feature-number {
       color: var(--gray-500);
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.1em;
     }
-
-    .feature-title {
-      font-weight: 700;
-    }
-
-    .feature-description {
-      color: var(--gray-500);
-    }
+    .feature-title { font-weight: 700; }
+    .feature-description { color: var(--gray-500); }
 
     /* ========================================================= METHODOLOGY ========================================================= */
     .method-grid {
@@ -273,27 +284,22 @@
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
-
     .method-item {
       padding: 35px;
       border-right: 1px solid var(--border);
+      transition: transform 0.4s var(--ease-out-expo), background-color 0.4s ease;
     }
-
-    .method-item:last-child {
-      border-right: none;
+    .method-item:hover {
+      transform: translateY(-5px);
+      background-color: rgba(0,0,0,0.02);
     }
-
+    .method-item:last-child { border-right: none; }
     .method-number {
       margin-bottom: 60px;
       font-family: var(--font-display);
       font-size: 2.5rem;
     }
-
-    .method-item h3 {
-      margin: 0 0 15px;
-      font-size: 1.1rem;
-    }
-
+    .method-item h3 { margin: 0 0 15px; font-size: 1.1rem; }
     .method-item p {
       margin: 0;
       color: var(--gray-500);
@@ -308,7 +314,6 @@
       color: var(--gray-500);
       font-size: 1.05rem;
     }
-
     .pricing-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -316,20 +321,23 @@
       background: var(--black);
       border: 1px solid var(--black);
     }
-
     .pricing-card {
       position: relative;
       display: flex;
       flex-direction: column;
       padding: 50px;
       background: var(--off-white);
+      transition: transform 0.5s var(--ease-out-expo);
     }
-
+    .pricing-card:hover {
+      transform: scale(1.02);
+      z-index: 10;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+    }
     .pricing-card.premium {
       background: var(--black);
       color: var(--white);
     }
-
     .premium-badge {
       position: absolute;
       top: 0;
@@ -342,7 +350,6 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
-
     .plan-index {
       color: var(--gray-500);
       font-size: 0.7rem;
@@ -350,62 +357,16 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
-
-    .premium .plan-index {
-      color: #888;
-    }
-
-    .plan-title {
-      margin: 20px 0 5px;
-      font-size: 2rem;
-      letter-spacing: -0.04em;
-    }
-
-    .plan-description {
-      margin: 0;
-      color: var(--gray-500);
-      font-size: 0.88rem;
-    }
-
-    .premium .plan-description {
-      color: #999;
-    }
-
-    .plan-price {
-      margin: 45px 0;
-      font-size: clamp(2.6rem, 5vw, 4rem);
-      font-weight: 700;
-      letter-spacing: -0.06em;
-    }
-
-    .plan-price span {
-      color: var(--gray-500);
-      font-size: 0.8rem;
-      font-weight: 400;
-      letter-spacing: 0;
-    }
-
-    .premium .plan-price span {
-      color: #888;
-    }
-
-    .plan-features {
-      list-style: none;
-      margin: 0 0 40px;
-      padding: 0;
-      flex-grow: 1;
-    }
-
-    .plan-features li {
-      padding: 13px 0;
-      border-top: 1px solid var(--border);
-      font-size: 0.92rem;
-    }
-
-    .premium .plan-features li {
-      border-color: #292929;
-    }
-
+    .premium .plan-index { color: #888; }
+    .plan-title { margin: 20px 0 5px; font-size: 2rem; letter-spacing: -0.04em; }
+    .plan-description { margin: 0; color: var(--gray-500); font-size: 0.88rem; }
+    .premium .plan-description { color: #999; }
+    .plan-price { margin: 45px 0; font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 700; letter-spacing: -0.06em; }
+    .plan-price span { color: var(--gray-500); font-size: 0.8rem; font-weight: 400; letter-spacing: 0; }
+    .premium .plan-price span { color: #888; }
+    .plan-features { list-style: none; margin: 0 0 40px; padding: 0; flex-grow: 1; }
+    .plan-features li { padding: 13px 0; border-top: 1px solid var(--border); font-size: 0.92rem; }
+    .premium .plan-features li { border-color: #292929; }
     .plan-deliverables {
       padding: 20px;
       background: var(--black);
@@ -416,12 +377,7 @@
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-
-    .premium .plan-deliverables {
-      background: var(--white);
-      color: var(--black);
-    }
-
+    .premium .plan-deliverables { background: var(--white); color: var(--black); }
     .deliverable-price {
       display: block;
       margin-top: 5px;
@@ -431,12 +387,7 @@
       text-transform: none;
       letter-spacing: 0;
     }
-
-    .pricing-note {
-      margin-top: 18px;
-      color: var(--gray-500);
-      font-size: 0.75rem;
-    }
+    .pricing-note { margin-top: 18px; color: var(--gray-500); font-size: 0.75rem; }
 
     /* ========================================================= OFFER ========================================================= */
     .offer {
@@ -445,7 +396,6 @@
       color: var(--white);
       text-align: center;
     }
-
     .offer-label {
       margin-bottom: 30px;
       color: #999;
@@ -454,7 +404,6 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
-
     .offer h2 {
       max-width: 850px;
       margin: 0 auto;
@@ -462,12 +411,7 @@
       line-height: 0.98;
       letter-spacing: -0.06em;
     }
-
-    .offer h2 em {
-      font-family: var(--font-display);
-      font-weight: 400;
-    }
-
+    .offer h2 em { font-family: var(--font-display); font-weight: 400; }
     .offer-description {
       max-width: 650px;
       margin: 35px auto 50px;
@@ -475,7 +419,6 @@
       font-size: 1rem;
       line-height: 1.8;
     }
-
     .offer-price {
       display: flex;
       justify-content: center;
@@ -483,25 +426,10 @@
       gap: 15px;
       margin-bottom: 30px;
     }
-
-    .price-old {
-      color: #666;
-      font-size: 1.1rem;
-      text-decoration: line-through;
-    }
-
-    .price-new {
-      font-size: clamp(3rem, 6vw, 5rem);
-      font-weight: 700;
-      letter-spacing: -0.06em;
-    }
-
-    .offer-subtitle {
-      margin: 0 0 40px;
-      color: var(--white);
-      font-weight: 600;
-    }
-
+    .price-old { color: #666; font-size: 1.1rem; text-decoration: line-through; }
+    .price-new { font-size: clamp(3rem, 6vw, 5rem); font-weight: 700; letter-spacing: -0.06em; }
+    .offer-subtitle { margin: 0 0 40px; color: var(--white); font-weight: 600; }
+    
     /* ========================================================= CTA ========================================================= */
     .cta-button {
       display: inline-flex;
@@ -516,33 +444,25 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+      transition: background 0.4s ease, color 0.4s ease, transform 0.4s var(--ease-out-expo);
+      border-radius: var(--radius);
     }
-
     .cta-button::after {
       content: "→";
       font-size: 1.1rem;
+      transition: transform 0.3s ease;
     }
-
     .cta-button:hover {
       background: #d9d9d6;
-      transform: translateY(-3px);
+      transform: translateY(-4px);
     }
-
-    .offer-footnote {
-      margin-top: 25px;
-      color: #666;
-      font-size: 0.72rem;
+    .cta-button:hover::after {
+      transform: translateX(4px);
     }
+    .offer-footnote { margin-top: 25px; color: #666; font-size: 0.72rem; }
 
     /* ========================================================= FOOTER ========================================================= */
-    footer {
-      padding: 35px 0;
-      background: var(--black);
-      color: #666;
-      border-top: 1px solid #222;
-    }
-
+    footer { padding: 35px 0; background: var(--black); color: #666; border-top: 1px solid #222; }
     .footer-inner {
       display: flex;
       justify-content: space-between;
@@ -553,60 +473,23 @@
 
     /* ========================================================= RESPONSIVE ========================================================= */
     @media (max-width: 800px) {
-      .container {
-        width: min(calc(100% - 32px), var(--max-width));
-      }
-      .hero {
-        padding: 85px 0 80px;
-      }
-      .hero-bottom, .copy-grid {
-        grid-template-columns: 1fr;
-        gap: 30px;
-      }
-      .hero-meta {
-        justify-content: flex-start;
-        text-align: left;
-      }
-      .section {
-        padding: 85px 0;
-      }
-      .section-header {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
-      .features-list li {
-        grid-template-columns: 40px 1fr;
-        gap: 15px;
-      }
-      .feature-description {
-        grid-column: 2;
-      }
-      .method-grid {
-        grid-template-columns: 1fr;
-      }
-      .method-item {
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
-      .method-item:last-child {
-        border-bottom: none;
-      }
-      .method-number {
-        margin-bottom: 30px;
-      }
-      .pricing-grid {
-        grid-template-columns: 1fr;
-      }
-      .pricing-card {
-        padding: 35px 25px;
-      }
-      .offer {
-        padding: 90px 0;
-      }
-      .footer-inner {
-        flex-direction: column;
-        gap: 10px;
-      }
+      .container { width: min(calc(100% - 32px), var(--max-width)); }
+      .hero { padding: 85px 0 80px; }
+      .hero-bottom, .copy-grid { grid-template-columns: 1fr; gap: 30px; }
+      .hero-meta { justify-content: flex-start; text-align: left; }
+      .section { padding: 85px 0; }
+      .section-header { grid-template-columns: 1fr; gap: 15px; }
+      .features-list li { grid-template-columns: 40px 1fr; gap: 15px; }
+      .feature-description { grid-column: 2; }
+      .method-grid { grid-template-columns: 1fr; }
+      .method-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .method-item:last-child { border-bottom: none; }
+      .method-number { margin-bottom: 30px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card { padding: 35px 25px; }
+      .pricing-card:hover { transform: translateY(-5px); }
+      .offer { padding: 90px 0; }
+      .footer-inner { flex-direction: column; gap: 10px; }
     }
   </style>
 </head>
@@ -614,100 +497,109 @@
   <!-- ========================================================= NAVIGATION ========================================================== -->
   <div class="container">
     <nav class="nav">
-      <div class="brand">
-        MYFX
-      </div>
+      <div class="brand">MYFX</div>
       <div class="nav-label"> Creative Performance Studio </div>
     </nav>
+    
     <!-- ===================================================== HERO ====================================================== -->
     <header class="hero">
-      <div class="eyebrow"> AI Creative Studio / 2026 </div>
-      <h1> Anuncios que hacen que la gente <em>pare.</em> </h1>
-      <div class="hero-bottom">
+      <div class="eyebrow reveal-up"> AI Creative Studio / 2026 </div>
+      <h1 class="reveal-up delay-100"> Anuncios que hacen que la gente <em>pare.</em> </h1>
+      <div class="hero-bottom reveal-up delay-200">
         <p class="hero-description"> Deja de perder miles de euros en rodajes que el algoritmo consume en tres días. Creamos Video Ads hiperrealistas, diseñados para captar atención, testear hooks y escalar campañas. </p>
         <div class="hero-meta"> Estrategia<br> IA Hiperrealista<br> Dirección de Arte<br> Performance </div>
       </div>
     </header>
+    
     <!-- ===================================================== PROBLEM / SOLUTION ====================================================== -->
     <section class="section">
-      <div class="section-header">
+      <div class="section-header reveal-up">
         <div class="section-number"> 01 / El problema </div>
         <h2 class="section-title"> La creatividad se ha convertido en una <em>ventaja competitiva.</em> </h2>
       </div>
       <div class="copy-grid">
-        <p class="text-block"> Contratar una agencia tradicional para rodar ocho variaciones de anuncios puede costarte semanas y más de 3.000 €. Para cuando publicas, la fatiga creativa ya puede haber reducido el rendimiento de la campaña. </p>
-        <p class="text-block"> Combinamos <strong>estructuras de guion orientadas a conversión</strong> con <strong>arquitectura de IA hiperrealista</strong> y dirección de arte cinematográfica para producir creatividades a una fracción del tiempo tradicional. </p>
+        <p class="text-block reveal-up delay-100"> Contratar una agencia tradicional para rodar ocho variaciones de anuncios puede costarte semanas y más de 3.000 €. Para cuando publicas, la fatiga creativa ya puede haber reducido el rendimiento de la campaña. </p>
+        <p class="text-block reveal-up delay-200"> Combinamos <strong>estructuras de guion orientadas a conversión</strong> con <strong>arquitectura de IA hiperrealista</strong> y dirección de arte cinematográfica para producir creatividades a una fracción del tiempo tradicional. </p>
       </div>
-      <div class="image-wrapper">
+      
+      <div class="image-wrapper reveal-scale">
+        <!-- Reemplaza con un unsplash genérico para previsualizar si quieres -->
         <img src="IMG/imagen 1.jpg" alt="Ejemplo de producción audiovisual con IA">
         <div class="image-caption">
           <span> AI / VISUAL PRODUCTION </span>
           <span> El fin del valle inquietante. </span>
         </div>
       </div>
+      
       <ul class="features-list">
-        <li>
+        <li class="reveal-up delay-100">
           <div class="feature-number">01</div>
           <div class="feature-title"> Guiones psicológicos </div>
           <div class="feature-description"> Hooks diseñados para captar atención desde el primer segundo y conducir al usuario hacia el CTA. </div>
         </li>
-        <li>
+        <li class="reveal-up delay-200">
           <div class="feature-number">02</div>
           <div class="feature-title"> Dirección de arte </div>
           <div class="feature-description"> Iluminación, composición, movimiento y colorimetría tratados como una producción premium. </div>
         </li>
-        <li>
+        <li class="reveal-up delay-300">
           <div class="feature-number">03</div>
           <div class="feature-title"> Velocidad </div>
           <div class="feature-description"> Formatos verticales 9:16, 15 o 30 segundos y múltiples variaciones listas para campañas. </div>
         </li>
       </ul>
     </section>
+
     <!-- ===================================================== METHODOLOGY ====================================================== -->
     <section class="section">
-      <div class="section-header">
+      <div class="section-header reveal-up">
         <div class="section-number"> 02 / Sistema </div>
         <h2 class="section-title"> El motor detrás de la <em>producción.</em> </h2>
       </div>
+      
       <div class="copy-grid">
-        <p class="text-block"> No utilizamos herramientas "click-and-play" limitadas. Operamos mediante sistemas avanzados basados en nodos que permiten controlar cada elemento visual de la producción. </p>
-        <p class="text-block"> Podemos modificar iluminación, entorno, composición o ángulo sin volver a grabar físicamente la escena. El resultado es una infraestructura creativa modular. </p>
+        <p class="text-block reveal-up delay-100"> No utilizamos herramientas "click-and-play" limitadas. Operamos mediante sistemas avanzados basados en nodos que permiten controlar cada elemento visual de la producción. </p>
+        <p class="text-block reveal-up delay-200"> Podemos modificar iluminación, entorno, composición o ángulo sin volver a grabar físicamente la escena. El resultado es una infraestructura creativa modular. </p>
       </div>
-      <div class="image-wrapper">
-        <img src="IMG/imagen 2.jpg" alt="Workflow técnico de arquitectura visual">
+      
+      <div class="image-wrapper reveal-scale">
+        <img src="img/imagen 2.jpg" alt="Workflow técnico de arquitectura visual">
         <div class="image-caption">
           <span> WORKFLOW / NODE SYSTEM </span>
           <span> Control visual frame by frame. </span>
         </div>
       </div>
+      
       <div class="method-grid">
-        <div class="method-item">
+        <div class="method-item reveal-up delay-100">
           <div class="method-number"> 01 </div>
           <h3> Estrategia </h3>
           <p> Identificamos el ángulo de venta, audiencia, promesa y estructura del anuncio. </p>
         </div>
-        <div class="method-item">
+        <div class="method-item reveal-up delay-200">
           <div class="method-number"> 02 </div>
           <h3> Producción </h3>
           <p> Construimos el cuerpo visual mediante IA, dirección de arte y composición cinematográfica. </p>
         </div>
-        <div class="method-item">
+        <div class="method-item reveal-up delay-300">
           <div class="method-number"> 03 </div>
           <h3> Variaciones </h3>
           <p> Creamos múltiples hooks para poder testar diferentes entradas sobre la misma pieza principal. </p>
         </div>
       </div>
     </section>
+
     <!-- ===================================================== PRICING ====================================================== -->
     <section class="section">
-      <div class="section-header">
+      <div class="section-header reveal-up">
         <div class="section-number"> 03 / Retainers </div>
         <h2 class="section-title"> Producción continua para <em>marcas que escalan.</em> </h2>
       </div>
-      <p class="pricing-intro"> Dos estructuras de producción diseñadas para diferentes niveles de volumen creativo. </p>
+      <p class="pricing-intro reveal-up delay-100"> Dos estructuras de producción diseñadas para diferentes niveles de volumen creativo. </p>
+      
       <div class="pricing-grid">
         <!-- PLAN IMPULSO -->
-        <div class="pricing-card">
+        <div class="pricing-card reveal-up delay-100">
           <div class="plan-index"> 01 / Impulso </div>
           <h3 class="plan-title"> Plan Impulso </h3>
           <p class="plan-description"> Ideal para validar estrategias. </p>
@@ -720,8 +612,9 @@
           </ul>
           <div class="plan-deliverables"> 8 archivos finales <span class="deliverable-price"> ~243 € por variación lista para Ads </span> </div>
         </div>
+        
         <!-- PLAN ESCALA -->
-        <div class="pricing-card premium">
+        <div class="pricing-card premium reveal-up delay-200">
           <div class="premium-badge"> Mayor volumen </div>
           <div class="plan-index"> 02 / Escala </div>
           <h3 class="plan-title"> Plan Escala </h3>
@@ -736,24 +629,30 @@
           <div class="plan-deliverables"> 30 archivos finales <span class="deliverable-price"> ~140 € por variación lista para Ads </span> </div>
         </div>
       </div>
-      <p class="pricing-note"> * Video individual fuera de retainer: setup fee de 650 €. </p>
+      <p class="pricing-note reveal-up delay-300"> * Video individual fuera de retainer: setup fee de 650 €. </p>
     </section>
   </div>
+
   <!-- ========================================================= SPECIAL OFFER ========================================================== -->
   <section class="offer">
     <div class="container">
-      <div class="offer-label"> Programa Beta / Casos de Éxito </div>
-      <h2> Construyamos algo que <em>merezca ser enseñado.</em> </h2>
-      <p class="offer-description"> Actualmente abrimos plazas para tres marcas con un producto sólido para documentar públicamente nuestro proceso y resultados. </p>
-      <div class="offer-price">
+      <div class="offer-label reveal-up"> Programa Beta / Casos de Éxito </div>
+      <h2 class="reveal-up delay-100"> Construyamos algo que <em>merezca ser enseñado.</em> </h2>
+      <p class="offer-description reveal-up delay-200"> Actualmente abrimos plazas para tres marcas con un producto sólido para documentar públicamente nuestro proceso y resultados. </p>
+      
+      <div class="offer-price reveal-up delay-300">
         <span class="price-old"> 650 € </span>
         <span class="price-new"> 150 € </span>
       </div>
-      <p class="offer-subtitle"> Primer Video Anuncio + Guion + 2 Hooks </p>
-      <a href="mailto:tuemail@agencia.com" class="cta-button"> Aplicar para el caso de estudio </a>
-      <p class="offer-footnote"> La cantidad cubre únicamente los gastos de servidores de renderizado. Guion, IA y edición incluidos. </p>
+      <p class="offer-subtitle reveal-up delay-300"> Primer Video Anuncio + Guion + 2 Hooks </p>
+      
+      <div class="reveal-up delay-400">
+        <a href="mailto:tuemail@agencia.com" class="cta-button"> Aplicar para el caso de estudio </a>
+      </div>
+      <p class="offer-footnote reveal-up delay-400"> La cantidad cubre únicamente los gastos de servidores de renderizado. Guion, IA y edición incluidos. </p>
     </div>
   </section>
+
   <!-- ========================================================= FOOTER ========================================================== -->
   <footer>
     <div class="container">
@@ -763,5 +662,34 @@
       </div>
     </div>
   </footer>
+
+  <!-- ========================================================= SCRIPTS PARA MOTION UI ========================================================== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Configuración del observer (cuando el 10% del elemento entra en pantalla)
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.10 
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Añade la clase que dispara la animación de CSS
+            entry.target.classList.add("is-visible");
+            // Deja de observar para que la animación no se repita
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Elementos a animar
+      const animatedElements = document.querySelectorAll('.reveal-up, .reveal-scale');
+      animatedElements.forEach(el => {
+        observer.observe(el);
+      });
+    });
+  </script>
 </body>
 </html>
