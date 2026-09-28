@@ -24,7 +24,7 @@
       --font-display: "Playfair Display", serif;
       --radius: 2px;
       --max-width: 1180px;
-      
+
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -84,7 +84,7 @@
 
     /* ========================================================= LAYOUT & NAVIGATION ========================================================= */
     .container { width: min(calc(100% - 48px), var(--max-width)); margin: 0 auto; position: relative; z-index: 10; }
-    
+
     .nav-wrapper {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       background: rgba(247, 247, 245, 0.75);
@@ -105,10 +105,10 @@
       font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
     }
     .eyebrow::before { content: ""; width: 35px; height: 1px; background: var(--black); }
-    
+
     .hero h1 { max-width: 1050px; margin: 0; font-size: clamp(3.5rem, 8.5vw, 8rem); line-height: 0.92; letter-spacing: -0.04em; font-weight: 600; }
     .hero h1 em { font-family: var(--font-display); font-weight: 400; font-style: italic; padding-right: 15px; }
-    
+
     .hero-bottom { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; margin-top: 75px; }
     .hero-description { max-width: 540px; color: var(--gray-700); font-size: 1.15rem; line-height: 1.75; }
     .hero-meta { display: flex; justify-content: flex-end; align-items: flex-end; text-align: right; font-size: 0.72rem; line-height: 1.9; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-500); }
@@ -180,7 +180,7 @@
       overflow: hidden;
       z-index: 10;
     }
-    
+
     .offer-grid {
       position: absolute;
       top: 0; left: -50%; width: 200%; height: 200%;
@@ -209,12 +209,12 @@
     .offer h2 { max-width: 850px; margin: 0 auto; font-size: clamp(2.8rem, 6vw, 5.5rem); line-height: 0.98; letter-spacing: -0.05em; }
     .offer h2 em { font-family: var(--font-display); font-weight: 400; }
     .offer-description { max-width: 650px; margin: 35px auto 50px; color: #aaa; font-size: 1.05rem; line-height: 1.8; }
-    
+
     .offer-price { display: flex; justify-content: center; align-items: baseline; gap: 15px; margin-bottom: 30px; }
     .price-old { color: #666; font-size: 1.2rem; text-decoration: line-through; }
     .price-new { font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -0.06em; color: var(--white); }
     .offer-subtitle { margin: 0 0 45px; color: var(--white); font-weight: 600; font-size: 1.1rem; }
-    
+
     .cta-button {
       position: relative;
       display: inline-flex; align-items: center; justify-content: center; gap: 15px;
@@ -255,7 +255,7 @@
   </style>
 </head>
 <body>
-  
+
   <!-- TEXTURAS EN MOVIMIENTO -->
   <div class="bg-matrix"></div>
   <div class="bg-glow"></div>
@@ -269,7 +269,7 @@
       </nav>
     </div>
   </div>
-  
+
   <div class="container">
     <!-- HERO -->
     <header class="hero">
@@ -280,7 +280,7 @@
         <div class="hero-meta"> Estrategia<br> IA Hiperrealista<br> Dirección de Arte<br> Performance </div>
       </div>
     </header>
-    
+
     <!-- PROBLEM / SOLUTION -->
     <section class="section">
       <div class="section-header reveal-up">
@@ -291,7 +291,7 @@
         <p class="text-block reveal-up delay-100"> Contratar una agencia tradicional para rodar ocho variaciones de anuncios puede costarte semanas y más de 3.000 €. Para cuando publicas, la fatiga creativa ya puede haber reducido el rendimiento de la campaña. </p>
         <p class="text-block reveal-up delay-200"> Combinamos <strong>estructuras de guion orientadas a conversión</strong> con <strong>arquitectura de IA hiperrealista</strong> y dirección de arte cinematográfica para producir creatividades a una fracción del tiempo tradicional. </p>
       </div>
-      
+
       <div class="image-wrapper reveal-up delay-100">
         <img src="IMG/imagen 1.jpg" alt="Ejemplo de producción audiovisual con IA">
         <div class="image-caption">
@@ -299,7 +299,7 @@
           <span> El fin del valle inquietante. </span>
         </div>
       </div>
-      
+
       <ul class="features-list">
         <li class="reveal-up delay-100">
           <div class="feature-number">01</div>
@@ -325,12 +325,12 @@
         <div class="section-number"> 02 / Sistema </div>
         <h2 class="section-title"> El motor detrás de la <em>producción.</em> </h2>
       </div>
-      
+
       <div class="copy-grid">
         <p class="text-block reveal-up delay-100"> No utilizamos herramientas "click-and-play" limitadas. Operamos mediante sistemas avanzados basados en nodos que permiten controlar cada elemento visual de la producción. </p>
         <p class="text-block reveal-up delay-200"> Podemos modificar iluminación, entorno, composición o ángulo sin volver a grabar físicamente la escena. El resultado es una infraestructura creativa modular. </p>
       </div>
-      
+
       <div class="image-wrapper reveal-up delay-100">
         <img src="IMG/imagen 2.jpg" alt="Workflow técnico de arquitectura visual">
         <div class="image-caption">
@@ -338,7 +338,7 @@
           <span> Control visual frame by frame. </span>
         </div>
       </div>
-      
+
       <div class="method-grid">
         <div class="method-item reveal-up delay-100">
           <div class="method-number"> 01 </div>
@@ -357,7 +357,32 @@
         </div>
       </div>
     </section>
+  </div> <!-- Cierre del primer contenedor .container -->
 
+  <!-- SPECIAL OFFER (3D KINETIC GRID) -->
+  <section class="offer">
+    <div class="offer-grid"></div>
+    <div class="offer-grid-fade"></div>
+
+    <div class="container offer-content">
+      <div class="offer-label reveal-up"> Programa Beta / Casos de Éxito </div>
+      <h2 class="reveal-up delay-100"> Construyamos algo que <em>merezca ser enseñado.</em> </h2>
+      <p class="offer-description reveal-up delay-200"> Actualmente abrimos plazas para tres marcas con un producto sólido para documentar públicamente nuestro proceso y resultados. </p>
+
+      <div class="offer-price reveal-up delay-300">
+        <span class="price-old"> 650 € </span>
+        <span class="price-new"> 150 € </span>
+      </div>
+      <p class="offer-subtitle reveal-up delay-300"> Primer Video Anuncio + Guion + 2 Hooks </p>
+
+      <div class="reveal-up delay-400">
+        <a href="mailto:tuemail@agencia.com" class="cta-button"> Aplicar para el caso de estudio </a>
+      </div>
+      <p class="offer-footnote reveal-up delay-400"> La cantidad cubre únicamente los gastos de servidores de renderizado. Guion, IA y edición incluidos. </p>
+    </div>
+  </section>
+
+  <div class="container"> <!-- Apertura del segundo contenedor .container para la sección Retainers -->
     <!-- PRICING -->
     <section class="section">
       <div class="section-header reveal-up">
@@ -365,7 +390,7 @@
         <h2 class="section-title"> Producción continua para <em>marcas que escalan.</em> </h2>
       </div>
       <p class="pricing-intro reveal-up delay-100"> Dos estructuras de producción diseñadas para diferentes niveles de volumen creativo. </p>
-      
+
       <div class="pricing-grid">
         <!-- PLAN IMPULSO -->
         <div class="pricing-card reveal-up delay-100">
@@ -381,7 +406,7 @@
           </ul>
           <div class="plan-deliverables"> 8 archivos finales <span class="deliverable-price"> ~243 € por variación lista para Ads </span> </div>
         </div>
-        
+
         <!-- PLAN ESCALA -->
         <div class="pricing-card premium reveal-up delay-200">
           <div class="premium-badge"> Mayor volumen </div>
@@ -400,30 +425,7 @@
       </div>
       <p class="pricing-note reveal-up delay-300"> * Video individual fuera de retainer: setup fee de 650 €. </p>
     </section>
-  </div>
-
-  <!-- SPECIAL OFFER (3D KINETIC GRID) -->
-  <section class="offer">
-    <div class="offer-grid"></div>
-    <div class="offer-grid-fade"></div>
-    
-    <div class="container offer-content">
-      <div class="offer-label reveal-up"> Programa Beta / Casos de Éxito </div>
-      <h2 class="reveal-up delay-100"> Construyamos algo que <em>merezca ser enseñado.</em> </h2>
-      <p class="offer-description reveal-up delay-200"> Actualmente abrimos plazas para tres marcas con un producto sólido para documentar públicamente nuestro proceso y resultados. </p>
-      
-      <div class="offer-price reveal-up delay-300">
-        <span class="price-old"> 650 € </span>
-        <span class="price-new"> 150 € </span>
-      </div>
-      <p class="offer-subtitle reveal-up delay-300"> Primer Video Anuncio + Guion + 2 Hooks </p>
-      
-      <div class="reveal-up delay-400">
-        <a href="mailto:tuemail@agencia.com" class="cta-button"> Aplicar para el caso de estudio </a>
-      </div>
-      <p class="offer-footnote reveal-up delay-400"> La cantidad cubre únicamente los gastos de servidores de renderizado. Guion, IA y edición incluidos. </p>
-    </div>
-  </section>
+  </div> <!-- Cierre del segundo contenedor .container -->
 
   <!-- FOOTER -->
   <footer>
